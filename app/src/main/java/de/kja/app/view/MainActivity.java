@@ -1,4 +1,4 @@
-package app.kja.de.app;
+package de.kja.app.view;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -13,6 +13,8 @@ import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+
+import app.kja.de.app.R;
 
 @EActivity
 @OptionsMenu(R.menu.menu)
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @OptionsItem(R.id.menu_refresh)
-    protected void menurefreshSelected() {
+    protected void menuRefreshSelected() {
         update();
     }
 
