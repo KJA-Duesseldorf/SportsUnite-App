@@ -24,7 +24,7 @@ android {
     buildToolsVersion "23.0.3"
 
     defaultConfig {
-        applicationId "app.kja.de.app"
+        applicationId "de.kja.app"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1

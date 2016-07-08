@@ -6,9 +6,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import app.kja.de.app.R;
+import java.util.ArrayList;
+import java.util.List;
+
+import de.kja.app.R;
+import de.kja.app.model.Content;
 
 public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHolder> {
+
+    private List<Content> contents = new ArrayList<Content>();
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -29,15 +35,20 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ContentAdapter.ViewHolder holder, int position) {
+        Content content = contents.get(position);
         TextView title = (TextView) holder.view.findViewById(R.id.contentTitle);
         TextView shortText = (TextView) holder.view.findViewById(R.id.contentShortText);
-        title.setText("Test title at " + position);
-        shortText.setText("Short test text at " + position);
+        title.setText(content.getTitle());
+        shortText.setText(content.getShortText());
     }
 
     @Override
     public int getItemCount() {
-        return 10;
+        return contents.size();
     }
 
+    public void setContents(List<Content> contents) {
+        this.contents = contents;
+        this.notifyDataSetChanged();
+    }
 }

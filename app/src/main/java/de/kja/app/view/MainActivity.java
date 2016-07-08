@@ -13,8 +13,13 @@ import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.rest.spring.annotations.RestService;
 
-import app.kja.de.app.R;
+import java.util.List;
+
+import de.kja.app.R;
+import de.kja.app.client.ContentClient;
+import de.kja.app.model.Content;
 
 @EActivity
 @OptionsMenu(R.menu.menu)
@@ -25,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
 
     @ViewById(R.id.listview)
     protected RecyclerView listview;
+
+    @RestService
+    protected ContentClient contentClient;
 
     protected ContentAdapter contentAdapter;
 
@@ -45,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
         contentAdapter = new ContentAdapter();
         listview.setAdapter(contentAdapter);
+
+        update();
     }
 
     @OptionsItem(R.id.menu_refresh)
@@ -55,16 +65,13 @@ public class MainActivity extends AppCompatActivity {
     @Background
     protected void update() {
         Log.i("MainActivity", "update");
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        showUpdate();
+        List<Content> contents = contentClient.getContents();
+        showUpdate(contents);
     }
 
     @UiThread
-    protected void showUpdate() {
+    protected void showUpdate(List<Content> contents) {
+        contentAdapter.setContents(contents);
         swipeRefreshLayout.setRefreshing(false);
     }
 
