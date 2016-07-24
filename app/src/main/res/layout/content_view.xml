@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:app="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/tools"
+    style="@style/CardView"
     app:id="@+id/content_view"
     app:layout_gravity="center"
     app:layout_width="match_parent"
-    app:layout_height="100dp"
-    card_view:cardCornerRadius="10dp">
+    app:layout_height="wrap_content"
+    card_view:cardCornerRadius="10dp"
+    app:layout_margin="10dp"
+    card_view:context=".view.MainActivity">
 
     <RelativeLayout
         app:layout_width="match_parent"
         app:layout_height="wrap_content"
         app:padding="16dp"
         app:id="@+id/content_wrapper"
-        >
+        app:background="@color/colorBackgroundDark">
 
         <TextView
             app:layout_width="wrap_content"
@@ -23,7 +26,8 @@
             app:layout_alignParentLeft="true"
             app:layout_alignParentStart="true"
             app:text="TestTitle"
-            app:layout_alignParentTop="true" />
+            app:layout_alignParentTop="true"
+            app:textColor="@color/colorTextDark"/>
 
         <TextView
             app:layout_width="wrap_content"
@@ -36,7 +40,8 @@
             app:layout_alignLeft="@+id/contentTitle"
             app:layout_alignStart="@+id/contentTitle"
             app:layout_below="@+id/contentTitle"
-            app:textSize="16sp" />
+            app:textSize="16sp"
+            app:textColor="@color/colorText"/>
 
     </RelativeLayout>
 </android.support.v7.widget.CardView>
