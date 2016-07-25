@@ -73,14 +73,14 @@ public class MainActivity extends AppCompatActivity implements RestErrorHandler,
     @Background
     protected void update() {
         List<Content> contents = contentClient.getContents();
-        if(contents != null) {
-            showUpdate(contents);
-        }
+        showUpdate(contents);
     }
 
     @UiThread
     protected void showUpdate(List<Content> contents) {
-        contentAdapter.setContents(contents);
+        if(contents != null) {
+            contentAdapter.setContents(contents);
+        }
         swipeRefreshLayout.setRefreshing(false);
     }
 
