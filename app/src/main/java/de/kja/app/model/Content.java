@@ -17,6 +17,7 @@ public class Content {
         this.title = title;
         this.shortText = shortText;
         this.text = text;
+        this.district = district;
     }
 
     public long getId() {
