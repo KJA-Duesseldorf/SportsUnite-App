@@ -6,12 +6,13 @@ public class Content {
     private String title;
     private String shortText;
     private String text;
+    private String district;
 
     public Content() {
 
     }
 
-    public Content(long id, String title, String shortText, String text) {
+    public Content(long id, String title, String shortText, String text, String district) {
         this.id = id;
         this.title = title;
         this.shortText = shortText;
@@ -32,5 +33,9 @@ public class Content {
 
     public String getText() {
         return text;
+    }
+
+    public String getDistrict() {
+        return district;
     }
 }
