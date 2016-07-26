@@ -7,6 +7,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 
 import java.util.ArrayList;
 
+import de.kja.app.model.District;
+
 @Rest(rootUrl = "http://192.168.1.23:8080", converters = {MappingJackson2HttpMessageConverter.class})
 public interface DistrictClient extends RestClientErrorHandling {
 
@@ -15,6 +17,6 @@ public interface DistrictClient extends RestClientErrorHandling {
 
 }
 
-class DistrictList extends ArrayList<String> {
+class DistrictList extends ArrayList<District> {
 
 }

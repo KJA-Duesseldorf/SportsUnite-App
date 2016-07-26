@@ -29,11 +29,15 @@ import org.androidannotations.rest.spring.api.RestErrorHandler;
 import org.springframework.core.NestedRuntimeException;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
 import de.kja.app.R;
 import de.kja.app.client.DistrictClient;
+import de.kja.app.model.District;
 
 @EActivity
 public class LocationActivity extends AppCompatActivity implements RestErrorHandler {
@@ -46,7 +50,7 @@ public class LocationActivity extends AppCompatActivity implements RestErrorHand
     @RestService
     protected DistrictClient districtClient;
 
-    private List<String> districts;
+    private List<District> districts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,12 +64,6 @@ public class LocationActivity extends AppCompatActivity implements RestErrorHand
 
         districtClient.setRestErrorHandler(this);
 
-        districtTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((AutoCompleteTextView) v).showDropDown();
-            }
-        });
         fillAutoComplete();
     }
 
@@ -77,15 +75,26 @@ public class LocationActivity extends AppCompatActivity implements RestErrorHand
 
     @UiThread
     protected void fillAutoCompleteFinish() {
+        ArrayList<String> options = new ArrayList<String>();
+        for(District district : districts) {
+            options.add(district.getName());
+            options.addAll(district.getSubDistrictsList());
+        }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                R.layout.support_simple_spinner_dropdown_item, districts);
+                R.layout.support_simple_spinner_dropdown_item, options);
         districtTextView.setAdapter(adapter);
     }
 
     @Click(R.id.buttonOk)
     public void onOkClicked() {
-        String district = districtTextView.getText().toString();
-        updateDistrict(district);
+        String option = districtTextView.getText().toString().trim();
+        String name = "unkown";
+        for(District district : districts) {
+            if(district.getName().equals(option) || district.getSubDistrictsList().contains(option)) {
+                name = district.getName();
+            }
+        }
+        updateDistrict(name);
     }
 
     @Click(R.id.buttonLocation)
@@ -165,13 +174,22 @@ public class LocationActivity extends AppCompatActivity implements RestErrorHand
     protected void updateDistrict(String district) {
         if(districts == null) {
             showAlert(R.string.connectionerror, R.string.tryagain);
-        } else if (districts.contains(district)) {
+        } else if (isDistrictName(district)) {
             SharedPreferences preferences = getSharedPreferences(MainActivity.PREFERENCE_FILE_KEY, MODE_PRIVATE);
             preferences.edit().putString(MainActivity.PREFERENCE_DISTRICT_KEY, district).apply();
             finish();
         } else {
             showAlert(R.string.invalid_district, R.string.only_duesseldorf_part_supported);
         }
+    }
+
+    private boolean isDistrictName(String name) {
+        for(District district : districts) {
+            if(district.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
