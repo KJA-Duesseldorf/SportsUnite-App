@@ -177,6 +177,7 @@ public class LocationActivity extends AppCompatActivity implements RestErrorHand
         } else if (isDistrictName(district)) {
             SharedPreferences preferences = getSharedPreferences(MainActivity.PREFERENCE_FILE_KEY, MODE_PRIVATE);
             preferences.edit().putString(MainActivity.PREFERENCE_DISTRICT_KEY, district).apply();
+            MainActivity.requestingLocation = false;
             finish();
         } else {
             showAlert(R.string.invalid_district, R.string.only_duesseldorf_part_supported);

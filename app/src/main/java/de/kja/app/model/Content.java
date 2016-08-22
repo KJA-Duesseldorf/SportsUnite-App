@@ -7,17 +7,10 @@ public class Content {
     private String shortText;
     private String text;
     private String district;
+    private String image;
 
     public Content() {
 
-    }
-
-    public Content(long id, String title, String shortText, String text, String district) {
-        this.id = id;
-        this.title = title;
-        this.shortText = shortText;
-        this.text = text;
-        this.district = district;
     }
 
     public long getId() {
@@ -38,5 +31,9 @@ public class Content {
 
     public String getDistrict() {
         return district;
+    }
+
+    public String getImage() {
+        return image;
     }
 }

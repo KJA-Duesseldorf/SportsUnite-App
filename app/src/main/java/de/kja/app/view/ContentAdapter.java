@@ -1,25 +1,33 @@
 package de.kja.app.view;
 
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import de.kja.app.R;
+import de.kja.app.client.ImageClient;
 import de.kja.app.model.Content;
 
 public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHolder> {
 
     private List<Content> contents = new ArrayList<Content>();
+    private Context context;
     private OnClickListener onClickListener;
+    private ImageClient imageClient;
 
-    public ContentAdapter(OnClickListener onClickListener) {
+    public ContentAdapter(Context context, OnClickListener onClickListener, ImageClient imageClient) {
+        this.context = context;
         this.onClickListener = onClickListener;
+        this.imageClient = imageClient;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -47,6 +55,12 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHold
         TextView shortText = (TextView) holder.view.findViewById(R.id.contentShortText);
         title.setText(content.getTitle());
         shortText.setText(content.getShortText());
+
+        if(content.getImage() != null && !content.getImage().isEmpty()) {
+            final ImageView imagePreview = (ImageView) holder.view.findViewById(R.id.imagePreview);
+            imagePreview.setImageBitmap(imageClient.getImageSync(context, content.getImage()));
+            imagePreview.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

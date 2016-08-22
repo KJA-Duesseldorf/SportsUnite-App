@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
@@ -27,6 +30,8 @@ import java.util.List;
 
 import de.kja.app.R;
 import de.kja.app.client.ContentClient;
+import de.kja.app.client.ImageClient;
+import de.kja.app.client.ImageClient_;
 import de.kja.app.model.Content;
 
 @EActivity
@@ -35,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements RestErrorHandler,
 
     public static String PREFERENCE_FILE_KEY = "de.kja.app.PREFERENCE_FILE_KEY";
     public static String PREFERENCE_DISTRICT_KEY = "district";
+
+    public static boolean requestingLocation = false;
 
     @ViewById(R.id.swiperefresh)
     protected SwipeRefreshLayout swipeRefreshLayout;
@@ -45,6 +52,9 @@ public class MainActivity extends AppCompatActivity implements RestErrorHandler,
     @RestService
     public static ContentClient contentClient;
 
+    @Bean
+    protected ImageClient imageClient;
+
     protected ContentAdapter contentAdapter;
 
     private boolean updating = false;
@@ -52,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements RestErrorHandler,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        imageClient.cleanupCache(this);
 
         SharedPreferences preferences = getSharedPreferences(PREFERENCE_FILE_KEY, MODE_PRIVATE);
         if(!preferences.contains(PREFERENCE_DISTRICT_KEY)) {
@@ -72,13 +84,17 @@ public class MainActivity extends AppCompatActivity implements RestErrorHandler,
         listview.setHasFixedSize(true);
         listview.setLayoutManager(new LinearLayoutManager(this));
 
-        contentAdapter = new ContentAdapter(this);
+        contentAdapter = new ContentAdapter(this, this, imageClient);
         listview.setAdapter(contentAdapter);
 
         update();
     }
 
     private void openLocationActivity() {
+        if(requestingLocation) {
+            return;
+        }
+        requestingLocation = true;
         Intent intent = new Intent(this, LocationActivity_.class);
         startActivity(intent);
     }
@@ -111,6 +127,11 @@ public class MainActivity extends AppCompatActivity implements RestErrorHandler,
         updating = true;
         SharedPreferences preferences = getSharedPreferences(PREFERENCE_FILE_KEY, MODE_PRIVATE);
         List<Content> contents = contentClient.getContents(preferences.getString(PREFERENCE_DISTRICT_KEY, "unknown"));
+        for(Content content : contents) {
+            if(content.getImage() != null && !content.getImage().isEmpty()) {
+                imageClient.getImageSync(this, content.getImage());
+            }
+        }
         showUpdate(contents);
         updating = false;
     }
@@ -147,6 +168,9 @@ public class MainActivity extends AppCompatActivity implements RestErrorHandler,
         Intent intent = new Intent(this, ContentActivity_.class);
         intent.putExtra(ContentActivity.EXTRA_TITLE, content.getTitle());
         intent.putExtra(ContentActivity.EXTRA_TEXT, content.getText());
+        if(content.getImage() != null && !content.getImage().isEmpty()) {
+            intent.putExtra(ContentActivity.EXTRA_IMAGE, content.getImage());
+        }
         startActivity(intent);
     }
 }
