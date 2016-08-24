@@ -9,9 +9,10 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import java.util.ArrayList;
 import java.util.List;
 
+import de.kja.app.Constants;
 import de.kja.app.model.Content;
 
-@Rest(rootUrl = "http://192.168.1.23:8080", converters = {MappingJackson2HttpMessageConverter.class})
+@Rest(rootUrl = Constants.HOST, converters = {MappingJackson2HttpMessageConverter.class})
 public interface ContentClient extends RestClientErrorHandling {
 
     @Get("/service/v1/content?district={district}")

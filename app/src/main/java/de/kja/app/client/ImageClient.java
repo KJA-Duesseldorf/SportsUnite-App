@@ -22,12 +22,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import de.kja.app.Constants;
 import de.kja.app.R;
 
 @EBean
 public class ImageClient {
 
-    private static final String IMAGES_SERVICE = "http://192.168.1.23:8080/images?id=";
+    private static final String IMAGES_SERVICE = Constants.HOST + "/images?id=";
     private static final String TAG = "ImageClient";
     private static final long MAX_FILE_AGE = 7 * 24 * 60 * 60 * 1000;
 

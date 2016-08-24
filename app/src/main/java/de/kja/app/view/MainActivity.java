@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements RestErrorHandler,
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                update();
+                update(true);
             }
         });
 
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements RestErrorHandler,
         contentAdapter = new ContentAdapter(this, this, imageClient);
         listview.setAdapter(contentAdapter);
 
-        update();
+        update(true);
     }
 
     private void openLocationActivity() {
@@ -106,12 +106,12 @@ public class MainActivity extends AppCompatActivity implements RestErrorHandler,
         if(!preferences.contains(PREFERENCE_DISTRICT_KEY)) {
             openLocationActivity();
         }
-        update();
+        update(false);
     }
 
     @OptionsItem(R.id.menu_refresh)
     protected void menuRefreshSelected() {
-        update();
+        update(true);
     }
 
     @OptionsItem(R.id.menu_location)
@@ -120,11 +120,14 @@ public class MainActivity extends AppCompatActivity implements RestErrorHandler,
     }
 
     @Background
-    protected void update() {
+    protected void update(boolean showUpdate) {
         if(updating) {
             return;
         }
         updating = true;
+        if(showUpdate) {
+            showRefresh();
+        }
         SharedPreferences preferences = getSharedPreferences(PREFERENCE_FILE_KEY, MODE_PRIVATE);
         List<Content> contents = contentClient.getContents(preferences.getString(PREFERENCE_DISTRICT_KEY, "unknown"));
         for(Content content : contents) {
@@ -134,6 +137,11 @@ public class MainActivity extends AppCompatActivity implements RestErrorHandler,
         }
         showUpdate(contents);
         updating = false;
+    }
+
+    @UiThread
+    protected void showRefresh() {
+        swipeRefreshLayout.setRefreshing(true);
     }
 
     @UiThread
