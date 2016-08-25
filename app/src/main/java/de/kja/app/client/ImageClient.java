@@ -27,7 +27,7 @@ import de.kja.app.Constants;
 
 public class ImageClient {
 
-    private static final String IMAGES_SERVICE = Constants.HOST + "/images?id=";
+    private static final String IMAGES_SERVICE = Constants.HOST + "/service/v1/images?id=";
     private static final String TAG = "ImageClient";
     private static final long MAX_FILE_AGE = 7 * 24 * 60 * 60 * 1000;
 
