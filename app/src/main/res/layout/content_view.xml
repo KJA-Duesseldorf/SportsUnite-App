@@ -17,30 +17,46 @@
         app:id="@+id/content_wrapper"
         app:background="@color/colorBackgroundDark">
 
-        <ImageView
-            app:layout_width="wrap_content"
+        <FrameLayout
+            app:layout_width="match_parent"
             app:layout_height="wrap_content"
-            app:id="@+id/imagePreview"
-            app:layout_alignRight="@+id/contentShortText"
-            app:layout_alignEnd="@+id/contentShortText"
-            app:visibility="gone"
-            app:layout_alignParentTop="true"
-            app:layout_alignParentLeft="true"
-            app:layout_alignParentStart="true"
-            app:scaleType="centerCrop"
-            app:adjustViewBounds="true"
-            app:maxHeight="200dp"
-            app:minHeight="200dp" />
+            app:id="@+id/previewWrapper"
+            app:measureAllChildren="true"
+            app:background="@color/colorBackgroundDarkest"
+            app:visibility="gone">
+
+            <ImageView
+                app:layout_width="match_parent"
+                app:layout_height="wrap_content"
+                app:id="@+id/imagePreview"
+                app:visibility="gone"
+                app:scaleType="centerCrop"
+                app:adjustViewBounds="true"
+                app:maxHeight="200dp"
+                app:minHeight="200dp" />
+
+            <ProgressBar
+                style="?android:attr/progressBarStyleSmall"
+                app:layout_width="match_parent"
+                app:layout_height="match_parent"
+                app:id="@+id/progressBarPreview"
+                app:layout_gravity="center"
+                app:layout_margin="50dp"
+                app:visibility="visible"
+                app:indeterminate="true" />
+        </FrameLayout>
+
+
 
         <TextView
             app:layout_width="wrap_content"
             app:layout_height="wrap_content"
-            app:textAppearance="?android:attr/textAppearanceMedium"
+            app:textAppearance="@style/TextAppearance.AppCompat.Headline"
             app:id="@+id/contentTitle"
             app:textSize="20sp"
             app:text="TestTitle"
             app:textColor="@color/colorTextDark"
-            app:layout_below="@+id/imagePreview"
+            app:layout_below="@+id/previewWrapper"
             app:layout_alignParentLeft="true"
             app:layout_alignParentStart="true" />
 

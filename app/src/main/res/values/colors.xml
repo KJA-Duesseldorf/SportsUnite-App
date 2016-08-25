@@ -5,6 +5,7 @@
     <color name="colorAccent">#6B66FB</color>
     <color name="colorBackground">#ffffff</color>
     <color name="colorBackgroundDark">#eeeeee</color>
+    <color name="colorBackgroundDarkest">#bbbbbb</color>
     <color name="colorTextDark">#4C4C4C</color>
     <color name="colorText">#5D5D5D</color>
 </resources>

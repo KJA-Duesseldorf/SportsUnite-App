@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -13,10 +12,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+
+import com.google.common.util.concurrent.FutureCallback;
 
 import org.androidannotations.annotations.Background;
-import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
@@ -31,15 +32,16 @@ import java.util.List;
 import de.kja.app.R;
 import de.kja.app.client.ContentClient;
 import de.kja.app.client.ImageClient;
-import de.kja.app.client.ImageClient_;
 import de.kja.app.model.Content;
 
 @EActivity
 @OptionsMenu(R.menu.menu)
-public class MainActivity extends AppCompatActivity implements RestErrorHandler, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements RestErrorHandler, View.OnClickListener, FutureCallback<ImageClient.TaggedBitmap> {
 
     public static String PREFERENCE_FILE_KEY = "de.kja.app.PREFERENCE_FILE_KEY";
     public static String PREFERENCE_DISTRICT_KEY = "district";
+
+    private static final String TAG = "MainActivity";
 
     public static boolean requestingLocation = false;
 
@@ -52,9 +54,6 @@ public class MainActivity extends AppCompatActivity implements RestErrorHandler,
     @RestService
     public static ContentClient contentClient;
 
-    @Bean
-    protected ImageClient imageClient;
-
     protected ContentAdapter contentAdapter;
 
     private boolean updating = false;
@@ -63,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements RestErrorHandler,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        imageClient.cleanupCache(this);
+        ImageClient.cleanupCache(this);
 
         SharedPreferences preferences = getSharedPreferences(PREFERENCE_FILE_KEY, MODE_PRIVATE);
         if(!preferences.contains(PREFERENCE_DISTRICT_KEY)) {
@@ -84,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements RestErrorHandler,
         listview.setHasFixedSize(true);
         listview.setLayoutManager(new LinearLayoutManager(this));
 
-        contentAdapter = new ContentAdapter(this, this, imageClient);
+        contentAdapter = new ContentAdapter(this, this, this);
         listview.setAdapter(contentAdapter);
 
         update(true);
@@ -132,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements RestErrorHandler,
         List<Content> contents = contentClient.getContents(preferences.getString(PREFERENCE_DISTRICT_KEY, "unknown"));
         for(Content content : contents) {
             if(content.getImage() != null && !content.getImage().isEmpty()) {
-                imageClient.getImageSync(this, content.getImage());
+                ImageClient.getImageAsync(this, content.getImage());
             }
         }
         showUpdate(contents);
@@ -155,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements RestErrorHandler,
     @Override
     @UiThread
     public void onRestClientExceptionThrown(NestedRuntimeException e) {
-        Log.e("MainActivity", "REST client error!", e);
+        Log.e(TAG, "REST client error!", e);
         new AlertDialog.Builder(this)
                 .setTitle(R.string.connectionerror)
                 .setMessage(R.string.tryagain)
@@ -180,5 +179,51 @@ public class MainActivity extends AppCompatActivity implements RestErrorHandler,
             intent.putExtra(ContentActivity.EXTRA_IMAGE, content.getImage());
         }
         startActivity(intent);
+    }
+
+    protected ContentAdapter.ViewHolder findViewHolder(String image) {
+        for(int i = 0; i < listview.getChildCount(); i++) {
+            ContentAdapter.ViewHolder viewHolder =
+                    (ContentAdapter.ViewHolder) listview.getChildViewHolder(listview.getChildAt(i));
+            if(image.equals(viewHolder.awaitingImage)) {
+                return viewHolder;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    @UiThread
+    public void onSuccess(ImageClient.TaggedBitmap result) {
+        ContentAdapter.ViewHolder viewHolder = findViewHolder(result.id);
+        if(viewHolder == null) {
+            return;
+        }
+        View view = viewHolder.view;
+        ImageView imagePreview = (ImageView) view.findViewById(R.id.imagePreview);
+        ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progressBarPreview);
+
+        imagePreview.setImageBitmap(result.bitmap);
+        imagePreview.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        progressBar.setVisibility(View.GONE);
+        imagePreview.setVisibility(View.VISIBLE);
+    }
+    @Override
+    @UiThread
+    public void onFailure(Throwable t) {
+        Log.e(TAG, "Could not load image!", t);
+
+        ContentAdapter.ViewHolder viewHolder = findViewHolder(t.getMessage());
+        if(viewHolder == null) {
+            return;
+        }
+        View view = viewHolder.view;
+        ImageView imagePreview = (ImageView) view.findViewById(R.id.imagePreview);
+        ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progressBarPreview);
+
+        imagePreview.setImageResource(R.drawable.ic_error_black_24dp);
+        imagePreview.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        progressBar.setVisibility(View.GONE);
+        imagePreview.setVisibility(View.VISIBLE);
     }
 }

@@ -1,62 +1,86 @@
 package de.kja.app.client;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-import org.androidannotations.annotations.Background;
-import org.androidannotations.annotations.EBean;
-import org.androidannotations.annotations.UiThread;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
 
 import de.kja.app.Constants;
-import de.kja.app.R;
 
-@EBean
 public class ImageClient {
 
     private static final String IMAGES_SERVICE = Constants.HOST + "/images?id=";
     private static final String TAG = "ImageClient";
     private static final long MAX_FILE_AGE = 7 * 24 * 60 * 60 * 1000;
 
-    public interface OnImageArrived {
-        void onImageArrived(String id, Bitmap image);
+    private static ListeningExecutorService executor = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
+    private static HashMap<String, ListenableFuture<TaggedBitmap>> fetching = new HashMap<String, ListenableFuture<TaggedBitmap>>();
+
+    public static class TaggedBitmap {
+        public String id;
+        public Bitmap bitmap;
+
+        public TaggedBitmap(String id, Bitmap bitmap) {
+            this.id = id;
+            this.bitmap = bitmap;
+        }
     }
 
-    @Background
-    public void getImageAsync(Context context, String id, OnImageArrived callback) {
-        Bitmap image = getImageSync(context, id);
-        call(callback, id, image);
-    }
+    public static ListenableFuture<TaggedBitmap> getImageAsync(Context context, final String id) {
+        final File imageFile = getFileForId(context, id);
 
-    public Bitmap getImageSync(Context context, String id) {
-        File file = getFileForId(context, id);
-        if(!file.exists()) {
-            if(!downloadImage(id, file)) {
-                showConnectionError(context);
-            }
-        } else {
-            file.setLastModified(System.currentTimeMillis());
+        ListenableFuture<TaggedBitmap> future = fetching.get(id);
+        if(future != null) {
+            return future;
         }
 
-        Bitmap image = BitmapFactory.decodeFile(file.getAbsolutePath());
-        return image;
+        future = executor.submit(new Callable<TaggedBitmap>() {
+            @Override
+            public TaggedBitmap call() throws Exception {
+                if(!imageFile.exists()) {
+                    downloadImage(id, imageFile);
+                }
+
+                imageFile.setLastModified(System.currentTimeMillis());
+                Bitmap image = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+                return new TaggedBitmap(id, image);
+            }
+        });
+        fetching.put(id, future);
+
+        Futures.addCallback(future, new FutureCallback<TaggedBitmap>() {
+            @Override
+            public void onSuccess(TaggedBitmap result) {
+                fetching.remove(result.id);
+            }
+            @Override
+            public void onFailure(Throwable t) {
+                fetching.remove(t.getMessage());
+            }
+        });
+
+        return future;
     }
 
-    protected boolean downloadImage(String id, File file) {
+    protected static void downloadImage(String id, File file) throws IOException {
         HttpURLConnection connection = null;
         InputStream in = null;
         OutputStream out = null;
@@ -64,11 +88,11 @@ public class ImageClient {
             String safeId = URLEncoder.encode(id, "UTF-8");
             URL url = new URL(IMAGES_SERVICE + safeId);
             connection = (HttpURLConnection) url.openConnection();
+            connection.setConnectTimeout(10 * 1000);
             connection.connect();
 
-            if(connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                Log.e(TAG, "Invalid response from server: " + connection.getResponseCode());
-                return false;
+            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                throw new IOException("Server returned " + connection.getResponseCode() + "!");
             }
 
             out = new FileOutputStream(file);
@@ -76,72 +100,56 @@ public class ImageClient {
             in = connection.getInputStream();
             byte[] buffer = new byte[4096];
             int length;
-            while((length = in.read(buffer)) != -1) {
+            while ((length = in.read(buffer)) != -1) {
                 out.write(buffer, 0, length);
             }
-        } catch (UnsupportedEncodingException e) {
-            Log.e(TAG, "UTF-8 encoding not supported!", e);
-            return false;
-        } catch (MalformedURLException e) {
-            Log.e(TAG, "ImageService URL malformed!", e);
-            return false;
-        } catch (IOException e) {
-            Log.e(TAG, "Connection error!", e);
-            return false;
+        } catch(Exception e) {
+            throw new IOException(id, e);
         } finally {
             try {
-                out.close();
+                if(out != null) {
+                    out.close();
+                }
             } catch (IOException e) {
                 Log.w(TAG, "Could not close file stream!", e);
             }
             try {
-                in.close();
+                if(in != null) {
+                    in.close();
+                }
             } catch (IOException e) {
                 Log.w(TAG, "Could not close download stream!", e);
             }
-            connection.disconnect();
+            if(connection != null) {
+                connection.disconnect();
+            }
         }
-        return true;
     }
 
-    @UiThread
-    protected void call(OnImageArrived callback, String id, Bitmap image) {
-        callback.onImageArrived(id, image);
-    }
-
-    protected File getFileForId(Context context, String id) {
+    protected static File getFileForId(Context context, String id) {
         return new File(context.getFilesDir(), "images/" + id + ".png");
     }
 
-    @UiThread
-    protected void showConnectionError(Context context) {
-        new AlertDialog.Builder(context)
-                .setTitle(R.string.connectionerror)
-                .setMessage(R.string.tryagain)
-                .setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
+    public static void cleanupCache(Context context) {
+        final File imagesDir = new File(context.getFilesDir(), "images");
+        executor.submit(new Runnable() {
+            @Override
+            public void run() {
+                if (!imagesDir.exists()) {
+                    imagesDir.mkdir();
+                }
+                File[] files = imagesDir.listFiles();
+                long now = System.currentTimeMillis();
+                int count = 0;
+                for (File file : files) {
+                    if (now - file.lastModified() > MAX_FILE_AGE) {
+                        file.delete();
+                        count++;
                     }
-                }).show();
-    }
-
-    @Background
-    public void cleanupCache(Context context) {
-        File imagesDir = new File(context.getFilesDir(), "images");
-        if(!imagesDir.exists()) {
-            imagesDir.mkdir();
-        }
-        File[] files = imagesDir.listFiles();
-        long now = System.currentTimeMillis();
-        int count = 0;
-        for(File file : files) {
-            if(now - file.lastModified() > MAX_FILE_AGE) {
-                file.delete();
-                count++;
+                }
+                Log.i(TAG, "Deleted " + count + " cached images.");
             }
-        }
-        Log.i(TAG, "Deleted " + count + " cached images.");
+        });
     }
 
 }
