@@ -62,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements RestErrorHandler,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        contentClient.setRestErrorHandler(this);
+
         ImageClient.cleanupCache(this);
 
         SharedPreferences preferences = getSharedPreferences(PREFERENCE_FILE_KEY, MODE_PRIVATE);
@@ -70,8 +72,6 @@ public class MainActivity extends AppCompatActivity implements RestErrorHandler,
         }
 
         setContentView(R.layout.activity_main);
-
-        contentClient.setRestErrorHandler(this);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -129,9 +129,11 @@ public class MainActivity extends AppCompatActivity implements RestErrorHandler,
         }
         SharedPreferences preferences = getSharedPreferences(PREFERENCE_FILE_KEY, MODE_PRIVATE);
         List<Content> contents = contentClient.getContents(preferences.getString(PREFERENCE_DISTRICT_KEY, "unknown"));
-        for(Content content : contents) {
-            if(content.getImage() != null && !content.getImage().isEmpty()) {
-                ImageClient.getImageAsync(this, content.getImage());
+        if(contents != null) {
+            for(Content content : contents) {
+                if(content.getImage() != null && !content.getImage().isEmpty()) {
+                    ImageClient.getImageAsync(this, content.getImage());
+                }
             }
         }
         showUpdate(contents);

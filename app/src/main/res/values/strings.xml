@@ -7,8 +7,10 @@
     <string name="enter_distritct">Please enter your district:</string>
     <string name="use_location">Use my location instead</string>
     <string name="invalid_district">Invalid district!</string>
-    <string name="only_duesseldorf_part_supported">Please note that only some districts in Düsseldorf are supported.</string>
+    <string name="only_duesseldorf_part_supported">Please note that only Düsseldorf is supported. If you are in Düsseldorf, then wait until your device has finished locating you.</string>
     <string name="no_permission">No permission!</string>
     <string name="permission_not_granted">Permission was not granted for retrieving locations.</string>
     <string name="change_location">Change location</string>
+    <string name="no_location">No location found!</string>
+    <string name="no_location_explanation">Could not obtain your location! Make sure you have the location services enabled.</string>
 </resources>

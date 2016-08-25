@@ -43,6 +43,7 @@ import de.kja.app.model.District;
 public class LocationActivity extends AppCompatActivity implements RestErrorHandler {
 
     private static final int PERMISSION_REQUEST_LOCATION = 42;
+    private static final String TAG = "LocationActivity";
 
     @ViewById(R.id.districtTextView)
     protected AutoCompleteTextView districtTextView;
@@ -57,12 +58,12 @@ public class LocationActivity extends AppCompatActivity implements RestErrorHand
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location);
 
+        districtClient.setRestErrorHandler(this);
+
         SharedPreferences preferences = getSharedPreferences(MainActivity.PREFERENCE_FILE_KEY, MODE_PRIVATE);
         if(preferences.contains(MainActivity.PREFERENCE_DISTRICT_KEY)) {
             districtTextView.setText(preferences.getString(MainActivity.PREFERENCE_DISTRICT_KEY, ""));
         }
-
-        districtClient.setRestErrorHandler(this);
 
         fillAutoComplete();
     }
@@ -117,7 +118,7 @@ public class LocationActivity extends AppCompatActivity implements RestErrorHand
 
         Location location = LocationServices.FusedLocationApi.getLastLocation(apiClient);
         if(location == null) {
-            showAlert(R.string.no_permission, R.string.permission_not_granted);
+            showAlert(R.string.no_location, R.string.no_location_explanation);
         } else {
             Geocoder geocoder = new Geocoder(this, Locale.getDefault());
             try {
@@ -173,6 +174,7 @@ public class LocationActivity extends AppCompatActivity implements RestErrorHand
     @UiThread
     protected void updateDistrict(String district) {
         if(districts == null) {
+            Log.w(TAG, "Districts array empty!");
             showAlert(R.string.connectionerror, R.string.tryagain);
         } else if (isDistrictName(district)) {
             SharedPreferences preferences = getSharedPreferences(MainActivity.PREFERENCE_FILE_KEY, MODE_PRIVATE);
@@ -195,7 +197,7 @@ public class LocationActivity extends AppCompatActivity implements RestErrorHand
     @Override
     @UiThread
     public void onRestClientExceptionThrown(NestedRuntimeException e) {
-        Log.e("MainActivity", "REST client error!", e);
+        Log.e(TAG, "REST client error!", e);
         showAlert(R.string.connectionerror, R.string.tryagain);
 
     }
