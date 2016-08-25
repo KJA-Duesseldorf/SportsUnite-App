@@ -3,6 +3,7 @@ package de.kja.app.view;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -71,7 +72,9 @@ public class LocationActivity extends AppCompatActivity implements RestErrorHand
     @Background
     protected void fillAutoComplete() {
         districts = districtClient.getValidDistricts();
-        fillAutoCompleteFinish();
+        if(districts != null) {
+            fillAutoCompleteFinish();
+        }
     }
 
     @UiThread
@@ -198,8 +201,31 @@ public class LocationActivity extends AppCompatActivity implements RestErrorHand
     @UiThread
     public void onRestClientExceptionThrown(NestedRuntimeException e) {
         Log.e(TAG, "REST client error!", e);
-        showAlert(R.string.connectionerror, R.string.tryagain);
-
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.connectionerror)
+                .setMessage(R.string.tryagain)
+                .setPositiveButton("Try again", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        fillAutoComplete();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(getSharedPreferences(MainActivity.PREFERENCE_FILE_KEY, MODE_PRIVATE).contains(MainActivity.PREFERENCE_DISTRICT_KEY)) {
+                            // Abort location change
+                            finish();
+                        } else {
+                            // Exit to home
+                            Intent intent = new Intent(Intent.ACTION_MAIN);
+                            intent.addCategory(Intent.CATEGORY_HOME);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            finish();
+                        }
+                    }
+                }).show();
     }
 
     @Override
