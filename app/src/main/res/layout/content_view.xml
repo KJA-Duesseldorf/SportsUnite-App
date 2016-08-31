@@ -52,7 +52,7 @@
             app:layout_width="wrap_content"
             app:layout_height="wrap_content"
             app:textAppearance="@style/TextAppearance.AppCompat.Headline"
-            app:id="@+id/contentTitle"
+            app:id="@+id/commentUsername"
             app:textSize="20sp"
             app:text="TestTitle"
             app:textColor="@color/colorTextDark"
@@ -68,9 +68,9 @@
             app:id="@+id/contentShortText"
             app:layout_alignParentRight="true"
             app:layout_alignParentEnd="true"
-            app:layout_alignLeft="@+id/contentTitle"
-            app:layout_alignStart="@+id/contentTitle"
-            app:layout_below="@+id/contentTitle"
+            app:layout_alignLeft="@+id/commentUsername"
+            app:layout_alignStart="@+id/commentUsername"
+            app:layout_below="@+id/commentUsername"
             app:textSize="16sp"
             app:textColor="@color/colorText"/>
 

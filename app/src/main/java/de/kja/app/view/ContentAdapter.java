@@ -1,15 +1,9 @@
 package de.kja.app.view;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -70,7 +64,7 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHold
     @Override
     public void onBindViewHolder(ContentAdapter.ViewHolder holder, int position) {
         final Content content = contents.get(position);
-        TextView title = (TextView) holder.view.findViewById(R.id.contentTitle);
+        TextView title = (TextView) holder.view.findViewById(R.id.commentUsername);
         TextView shortText = (TextView) holder.view.findViewById(R.id.contentShortText);
         FrameLayout wrapper = (FrameLayout) holder.view.findViewById(R.id.previewWrapper);
         ImageView imageView = (ImageView) holder.view.findViewById(R.id.imagePreview);
