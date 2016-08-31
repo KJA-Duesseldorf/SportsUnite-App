@@ -13,4 +13,11 @@
     <string name="change_location">Change location</string>
     <string name="no_location">No location found!</string>
     <string name="no_location_explanation">Could not obtain your location! Make sure you have the location services enabled.</string>
+    <string name="enter_username">Please enter a username:</string>
+    <string name="username_used">Username is already in use!</string>
+    <string name="tryagain_button">Try again</string>
+    <string name="cancel">Cancel</string>
+    <string name="usercomments">Comments:</string>
+    <string name="no_comments_yet">There are no comments yet!</string>
+    <string name="send">Send</string>
 </resources>
