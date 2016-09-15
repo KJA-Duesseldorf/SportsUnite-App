@@ -45,28 +45,13 @@
                 android:indeterminate="true" />
         </FrameLayout>
 
-        <TextView
+        <us.feras.mdv.MarkdownView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-            android:text="Test Title"
-            android:id="@+id/title"
-            android:textColor="@color/colorTextDark"
+            android:id="@+id/contentMarkdown"
             android:layout_below="@+id/image_wrapper"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text"
-            android:id="@+id/text"
-            android:textColor="@color/colorText"
-            android:layout_below="@+id/title"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="5dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -75,10 +60,9 @@
             android:text="@string/usercomments"
             android:id="@+id/userCommentsText"
             android:textColor="@color/colorTextDark"
-            android:layout_below="@+id/text"
+            android:layout_below="@+id/contentMarkdown"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="5dp" />
+            android:layout_alignParentStart="true" />
 
         <FrameLayout
             android:layout_width="match_parent"

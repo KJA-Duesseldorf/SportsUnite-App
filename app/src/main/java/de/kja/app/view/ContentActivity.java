@@ -39,6 +39,7 @@ import de.kja.app.client.ClientErrorHandler;
 import de.kja.app.client.ContentClient;
 import de.kja.app.client.ImageClient;
 import de.kja.app.model.Comment;
+import us.feras.mdv.MarkdownView;
 
 @EActivity
 public class ContentActivity extends AppCompatActivity {
@@ -59,11 +60,8 @@ public class ContentActivity extends AppCompatActivity {
     @ViewById(R.id.progressBarImage)
     protected ProgressBar progressBar;
 
-    @ViewById(R.id.title)
-    protected TextView titleView;
-
-    @ViewById(R.id.text)
-    protected TextView textView;
+    @ViewById(R.id.contentMarkdown)
+    protected MarkdownView contentMarkdown;
 
     @ViewById(R.id.commentList)
     protected RecyclerView commentList;
@@ -100,8 +98,8 @@ public class ContentActivity extends AppCompatActivity {
         contentClient.setRestErrorHandler(clientErrorHandler);
 
         Intent intent = getIntent();
-        titleView.setText(intent.getStringExtra(EXTRA_TITLE));
-        textView.setText(intent.getStringExtra(EXTRA_TEXT));
+        contentMarkdown.loadMarkdown(intent.getStringExtra(EXTRA_TEXT));
+
 
         progressBar.getIndeterminateDrawable().setColorFilter(
                 ContextCompat.getColor(this, R.color.colorPrimaryDark), PorterDuff.Mode.MULTIPLY);
