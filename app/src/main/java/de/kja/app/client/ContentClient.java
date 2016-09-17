@@ -21,8 +21,8 @@ import de.kja.app.model.Content;
         interceptors = {Authenticator.class})
 public interface ContentClient extends RestClientErrorHandling {
 
-    @Get("/service/v1/content?district={district}")
-    ContentList getContents(@Path("district") String district);
+    @Get("/service/v1/content?district={district}&language={language}")
+    ContentList getContents(@Path("district") String district, @Path("language") String language);
 
     @Get("/service/v1/content/{id}")
     CommentList getComments(@Path("id") long contentId);

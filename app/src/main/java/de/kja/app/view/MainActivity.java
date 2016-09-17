@@ -24,6 +24,7 @@ import org.androidannotations.annotations.ViewById;
 import org.androidannotations.rest.spring.annotations.RestService;
 
 import java.util.List;
+import java.util.Locale;
 
 import de.kja.app.R;
 import de.kja.app.client.ClientErrorHandler;
@@ -141,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             showRefresh();
         }
         SharedPreferences preferences = getSharedPreferences(PREFERENCE_FILE_KEY, MODE_PRIVATE);
-        List<Content> contents = contentClient.getContents(preferences.getString(PREFERENCE_DISTRICT_KEY, "unknown"));
+        List<Content> contents = contentClient.getContents(preferences.getString(PREFERENCE_DISTRICT_KEY, "unknown"), Locale.getDefault().getLanguage());
         if(contents != null) {
             for(Content content : contents) {
                 if(content.getImage() != null && !content.getImage().isEmpty()) {

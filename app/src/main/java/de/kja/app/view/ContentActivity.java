@@ -32,6 +32,7 @@ import org.androidannotations.annotations.ViewById;
 import org.androidannotations.rest.spring.annotations.RestService;
 
 import java.util.List;
+import java.util.Locale;
 
 import de.kja.app.R;
 import de.kja.app.client.Authenticator;

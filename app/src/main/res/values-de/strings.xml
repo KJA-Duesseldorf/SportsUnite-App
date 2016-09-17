@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">App</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="change_location">Position ändern</string>
+    <string name="connectionerror">Verbindungsfehler!</string>
+    <string name="enter_distritct">Geben Sie ihren Stadtteil ein:</string>
+    <string name="enter_username">Ihr neuer Benutzername:</string>
+    <string name="invalid_district">Ungültiger Stadtteil!</string>
+    <string name="menu_refresh">Aktualisieren</string>
+    <string name="no_comments_yet">Noch keine Kommentare vorhanden!</string>
+    <string name="no_location">Positionsfindung nicht möglich!</string>
+    <string name="no_location_explanation">Wir konnten Ihre Position nicht finden. Bitte stellen Sie sicher, dass Sie die Standortdienste angeschaltet haben.</string>
+    <string name="no_permission">Keine Berechtigung!</string>
+    <string name="ok">OK</string>
+    <string name="only_duesseldorf_part_supported">Bitte beachten Sie, dass nur Düsseldorf unterstützt ist. Wenn Sie in Düsseldorf sind, warten Sie bitte, bis ihr Gerät den Standort bestimmt hat.</string>
+    <string name="permission_not_granted">Wir haben keine Berechtigung bekommen, um Ihren Standort abzurufen.</string>
+    <string name="send">Senden</string>
+    <string name="tryagain">Versuchen Sie es später bitte erneut. Wenn dieses Problem besteht, kontaktieren Sie uns!</string>
+    <string name="tryagain_button">Erneut versuchen</string>
+    <string name="use_location">Nutze die Standortdienste</string>
+    <string name="usercomments">Kommentare:</string>
+    <string name="username_used">Benutzername bereits in Benutzung!</string>
+</resources>

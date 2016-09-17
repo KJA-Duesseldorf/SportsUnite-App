@@ -74,7 +74,6 @@ public class Authenticator implements ClientHttpRequestInterceptor {
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
         if(username != null && password != null) {
             HttpHeaders headers = request.getHeaders();
-            Log.i(TAG, username + " | " + password);
             headers.setAuthorization(new HttpBasicAuthentication(username, password));
         }
         return execution.execute(request, body);
