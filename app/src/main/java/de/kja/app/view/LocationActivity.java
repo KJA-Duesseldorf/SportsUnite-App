@@ -204,13 +204,13 @@ public class LocationActivity extends AppCompatActivity implements RestErrorHand
         new AlertDialog.Builder(this)
                 .setTitle(R.string.connectionerror)
                 .setMessage(R.string.tryagain)
-                .setPositiveButton("Try again", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.tryagain_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         fillAutoComplete();
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if(getSharedPreferences(MainActivity.PREFERENCE_FILE_KEY, MODE_PRIVATE).contains(MainActivity.PREFERENCE_DISTRICT_KEY)) {
