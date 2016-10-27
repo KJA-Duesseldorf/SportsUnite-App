@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
@@ -30,6 +31,8 @@ import org.springframework.core.NestedRuntimeException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -201,13 +204,13 @@ public class LocationActivity extends AppCompatActivity implements RestErrorHand
         new AlertDialog.Builder(this)
                 .setTitle(R.string.connectionerror)
                 .setMessage(R.string.tryagain)
-                .setPositiveButton(R.string.tryagain_button, new DialogInterface.OnClickListener() {
+                .setPositiveButton("Try again", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         fillAutoComplete();
                     }
                 })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if(getSharedPreferences(MainActivity.PREFERENCE_FILE_KEY, MODE_PRIVATE).contains(MainActivity.PREFERENCE_DISTRICT_KEY)) {

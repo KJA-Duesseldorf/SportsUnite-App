@@ -1,51 +1,32 @@
 package de.kja.app.view;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 
-import org.androidannotations.annotations.Background;
-import org.androidannotations.annotations.Bean;
-import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-import org.androidannotations.rest.spring.annotations.RestService;
-
-import java.util.List;
-import java.util.Locale;
 
 import de.kja.app.R;
-import de.kja.app.client.Authenticator;
-import de.kja.app.client.ClientErrorHandler;
-import de.kja.app.client.ContentClient;
 import de.kja.app.client.ImageClient;
-import de.kja.app.model.Comment;
 import us.feras.mdv.MarkdownView;
 
 @EActivity
 public class ContentActivity extends AppCompatActivity {
 
-    public static final String EXTRA_ID = "id";
     public static final String EXTRA_TITLE = "title";
     public static final String EXTRA_TEXT = "text";
     public static final String EXTRA_IMAGE = "image";
@@ -64,39 +45,12 @@ public class ContentActivity extends AppCompatActivity {
     @ViewById(R.id.contentMarkdown)
     protected MarkdownView contentMarkdown;
 
-    @ViewById(R.id.commentList)
-    protected RecyclerView commentList;
-
-    @ViewById(R.id.textViewNoComments)
-    protected TextView noComments;
-
-    @ViewById(R.id.editTextComment)
-    protected EditText editTextComment;
-
-    @RestService
-    protected ContentClient contentClient;
-
-    @Bean
-    protected ClientErrorHandler clientErrorHandler;
-
-    @Bean
-    protected CommentAdapter commentAdapter;
-
-    @Bean
-    protected Authenticator authenticator;
-
     protected boolean isDestroyed;
-
-    private boolean updating = false;
-
-    private long contentId = -1l;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content);
-
-        contentClient.setRestErrorHandler(clientErrorHandler);
 
         Intent intent = getIntent();
         contentMarkdown.loadMarkdown(intent.getStringExtra(EXTRA_TEXT));
@@ -145,68 +99,11 @@ public class ContentActivity extends AppCompatActivity {
                 }
             });
         }
-
-        commentList.setLayoutManager(new LinearLayoutManager(this) {
-            @Override
-            public boolean canScrollVertically() {
-                return false;
-            }
-        });
-        commentList.setAdapter(commentAdapter);
-        contentId = intent.getLongExtra(EXTRA_ID, -1l);
-        update();
-
-    }
-
-    @UiThread
-    public void update() {
-        if(updating) {
-            return;
-        }
-        updating = true;
-        updateBackground();
-    }
-
-    @Background
-    protected void updateBackground() {
-        List<Comment> comments = contentClient.getComments(contentId);
-        show(comments);
-    }
-
-    @UiThread
-    public void show(List<Comment> comments) {
-        if(comments != null) {
-            if(!comments.isEmpty()) {
-                noComments.setVisibility(View.GONE);
-                commentList.setVisibility(View.VISIBLE);
-            } else {
-                noComments.setVisibility(View.VISIBLE);
-                commentList.setVisibility(View.GONE);
-            }
-            commentAdapter.show(comments);
-        }
-        updating = false;
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         isDestroyed = true;
-    }
-
-    @Click(R.id.buttonSend)
-    protected void buttonSend() {
-        String comment = editTextComment.getText().toString().trim();
-        if(comment.isEmpty()) {
-            return;
-        }
-        editTextComment.getText().clear();
-        postComment(comment);
-    }
-
-    @Background
-    protected void postComment(String comment) {
-        contentClient.postComment(contentId, comment);
-        update();
     }
 }
