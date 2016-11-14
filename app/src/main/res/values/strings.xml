@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">App</string>
+    <string name="app_name">SportsUnite</string>
     <string name="menu_refresh">Refresh</string>
     <string name="tryagain">Please try again later. If this problem persists, please contact us!</string>
     <string name="connectionerror">Connection error!</string>

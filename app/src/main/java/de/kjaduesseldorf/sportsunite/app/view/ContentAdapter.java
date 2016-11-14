@@ -1,15 +1,9 @@
-package de.kja.app.view;
+package de.kjaduesseldorf.sportsunite.app.view;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,9 +20,9 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.kja.app.R;
-import de.kja.app.client.ImageClient;
-import de.kja.app.model.Content;
+import de.kjaduesseldorf.sportsunite.app.R;
+import de.kjaduesseldorf.sportsunite.app.client.ImageClient;
+import de.kjaduesseldorf.sportsunite.app.model.Content;
 
 public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHolder> {
 

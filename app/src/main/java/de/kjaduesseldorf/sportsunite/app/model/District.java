@@ -1,4 +1,4 @@
-package de.kja.app.model;
+package de.kjaduesseldorf.sportsunite.app.model;
 
 import java.util.Arrays;
 import java.util.List;

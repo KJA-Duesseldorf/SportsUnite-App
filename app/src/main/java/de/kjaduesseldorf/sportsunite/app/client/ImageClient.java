@@ -1,4 +1,4 @@
-package de.kja.app.client;
+package de.kjaduesseldorf.sportsunite.app.client;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 
-import de.kja.app.Constants;
+import de.kjaduesseldorf.sportsunite.app.Constants;
 
 public class ImageClient {
 

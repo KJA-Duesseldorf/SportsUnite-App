@@ -1,4 +1,4 @@
-package de.kja.app.client;
+package de.kjaduesseldorf.sportsunite.app.client;
 
 import org.androidannotations.rest.spring.annotations.Get;
 import org.androidannotations.rest.spring.annotations.Rest;
@@ -7,8 +7,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 
 import java.util.ArrayList;
 
-import de.kja.app.Constants;
-import de.kja.app.model.District;
+import de.kjaduesseldorf.sportsunite.app.Constants;
+import de.kjaduesseldorf.sportsunite.app.model.District;
 
 @Rest(rootUrl = Constants.HOST, converters = {MappingJackson2HttpMessageConverter.class})
 public interface DistrictClient extends RestClientErrorHandling {

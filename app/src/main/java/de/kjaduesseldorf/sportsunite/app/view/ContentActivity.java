@@ -1,4 +1,4 @@
-package de.kja.app.view;
+package de.kjaduesseldorf.sportsunite.app.view;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -20,8 +20,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
-import de.kja.app.R;
-import de.kja.app.client.ImageClient;
+import de.kjaduesseldorf.sportsunite.app.R;
+import de.kjaduesseldorf.sportsunite.app.client.ImageClient;
 import us.feras.mdv.MarkdownView;
 
 @EActivity

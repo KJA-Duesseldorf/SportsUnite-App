@@ -1,4 +1,4 @@
-package de.kja.app.model;
+package de.kjaduesseldorf.sportsunite.app.model;
 
 public class Content {
 

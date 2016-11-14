@@ -1,4 +1,4 @@
-package de.kja.app;
+package de.kjaduesseldorf.sportsunite.app;
 
 public class Constants {
 

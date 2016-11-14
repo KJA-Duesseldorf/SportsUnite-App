@@ -1,10 +1,9 @@
-package de.kja.app.view;
+package de.kjaduesseldorf.sportsunite.app.view;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -30,10 +29,10 @@ import org.springframework.core.NestedRuntimeException;
 import java.util.List;
 import java.util.Locale;
 
-import de.kja.app.R;
-import de.kja.app.client.ContentClient;
-import de.kja.app.client.ImageClient;
-import de.kja.app.model.Content;
+import de.kjaduesseldorf.sportsunite.app.R;
+import de.kjaduesseldorf.sportsunite.app.client.ContentClient;
+import de.kjaduesseldorf.sportsunite.app.client.ImageClient;
+import de.kjaduesseldorf.sportsunite.app.model.Content;
 
 @EActivity
 @OptionsMenu(R.menu.menu)

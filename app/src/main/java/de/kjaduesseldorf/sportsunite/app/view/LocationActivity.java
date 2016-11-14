@@ -1,4 +1,4 @@
-package de.kja.app.view;
+package de.kjaduesseldorf.sportsunite.app.view;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
@@ -31,14 +30,12 @@ import org.springframework.core.NestedRuntimeException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import de.kja.app.R;
-import de.kja.app.client.DistrictClient;
-import de.kja.app.model.District;
+import de.kjaduesseldorf.sportsunite.app.R;
+import de.kjaduesseldorf.sportsunite.app.client.DistrictClient;
+import de.kjaduesseldorf.sportsunite.app.model.District;
 
 @EActivity
 public class LocationActivity extends AppCompatActivity implements RestErrorHandler {
